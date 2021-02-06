@@ -1,0 +1,11 @@
+*.o
+*.so
+*.a
+build/*
+build
+CHIP8-emulator
+testsuite
+venv
+venv/*
+__pycache__
+__pycache__/*
