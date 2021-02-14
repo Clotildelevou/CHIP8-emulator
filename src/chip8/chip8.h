@@ -2,24 +2,31 @@
 #define CHIP_8
 
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 typedef struct chip8
 {
-    uint8_t V[16]; //8 bits registers x16
-    uint16_t I; //16 bits Memory register
-    uint16_t SP; //Stack pointer (0x000 to 0xFFF)
-    uint16_t PC; //Program counter (0x000 to 0xFFF)
-   
-    uint8_t delay_timer; //delay timer
-    uint8_t sound_timer; //sound timer
-    
-    uint16_t *stack; //16 levels stack
-    uint8_t *memory; //4Kb memory
-    uint8_t *screen; //2048pixel screen (64x32p)
+    uint8_t V[16]; // 8 bits registers x16
+    uint16_t I; // 16 bits Memory register
+    uint16_t SP; // Stack pointer (0x000 to 0xFFF)
+    uint16_t PC; // Program counter (0x000 to 0xFFF)
+
+    uint8_t delay_timer; // delay timer
+    uint8_t sound_timer; // sound timer
+
+    uint16_t *stack; // 16 levels stack
+    uint8_t *memory; // 4Kb memory
+    uint8_t *screen; // 2048pixel screen (64x32p)
 } chip8;
 
-chip8 *init_chip8(void); //inits the chip8
-//void emulate(chip8 *chip); //emulate a cycle (fetch opcode, decode,
-                                            //execute & update timers)
+chip8 *init_chip8(void); // inits the chip8
+void emulate(chip8 *chip); // emulate a cycle (fetch opcode, decode,
+                           // execute & update timers)
+void zero_case(chip8 *chip, uint16_t opcode);
+void one_case(chip8 *chip, uint16_t opcode);
+void two_case(chip8 *chip, uint16_t opcode);
+void three_case(chip8 *chip, uint16_t opcode);
+void four_case(chip8 *chip, uint16_t opcode);
+void five_case(chip8 *chip, uint16_t opcode);
 #endif
