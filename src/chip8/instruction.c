@@ -104,60 +104,108 @@ void seven_case(chip8 *chip, uint16_t opcode)
 }
 
 // plural cases for 8
-void height_case(chip8 *chip, uint16_t opcode)
+// here we got a lot of them so we'll also use a jump table.
+
+void ld(chip8 *chip, uint16_t opcode)
 {
-    uint16_t last = opcode & 0x000F;
     uint16_t x = opcode & 0x0F00 >> 8;
     uint16_t y = opcode & 0x00F0 >> 4;
+    chip->V[x] = chip->V[y];
+    chip->PC += 2;
+}
 
-    switch (last)
+void or (chip8 * chip, uint16_t opcode)
+{
+    uint16_t x = opcode & 0x0F00 >> 8;
+    uint16_t y = opcode & 0x00F0 >> 4;
+    chip->V[x] = chip->V[y] | chip->V[x];
+    chip->PC += 2;
+}
+
+void and (chip8 * chip, uint16_t opcode)
+{
+    uint16_t x = opcode & 0x0F00 >> 8;
+    uint16_t y = opcode & 0x00F0 >> 4;
+    chip->V[x] = chip->V[y] & chip->V[x];
+    chip->PC += 2;
+}
+
+void xor(chip8 *chip, uint16_t opcode)
+{
+    uint16_t x = opcode & 0x0F00 >> 8;
+    uint16_t y = opcode & 0x00F0 >> 4;
+    chip->V[x] = chip->V[y] ^ chip->V[x];
+    chip->PC += 2;
+}
+
+void add(chip8 *chip, uint16_t opcode)
+{
+    uint16_t x = opcode & 0x0F00 >> 8;
+    uint16_t y = opcode & 0x00F0 >> 4;
+    chip->V[x] = chip->V[y] + chip->V[x];
+    if (chip->V[y] > (0xFF - chip->V[x]))
+        chip->V[0xF] = 1;
+    else
+        chip->V[0xF] = 0;
+    chip->PC += 2;
+}
+
+void sub(chip8 *chip, uint16_t opcode)
+{
+    uint16_t x = opcode & 0x0F00 >> 8;
+    uint16_t y = opcode & 0x00F0 >> 4;
+    chip->V[x] = chip->V[y] - chip->V[x];
+    if (chip->V[y] > (0xFF - chip->V[x]))
+        chip->V[0xF] = 0;
+    else
+        chip->V[0xF] = 1;
+    chip->PC += 2;
+}
+
+void shr(chip8 *chip, uint16_t opcode)
+{
+    uint16_t x = opcode & 0x0F00 >> 8;
+    chip->V[0xF] = chip->V[x] & 0x1;
+    chip->V[x] >>= 1;
+    chip->PC += 2;
+}
+
+void subn(chip8 *chip, uint16_t opcode)
+{
+    uint16_t x = opcode & 0x0F00 >> 8;
+    uint16_t y = opcode & 0x00F0 >> 4;
+    if (chip->V[x] < chip->V[y])
+        chip->V[0xF] = 0;
+    else
+        chip->V[0xF] = 1;
+    chip->V[x] = chip->V[y] + chip->V[x];
+    chip->PC += 2;
+}
+
+void shl(chip8 *chip, uint16_t opcode)
+{
+    uint16_t x = opcode & 0x0F00 >> 8;
+    chip->V[0xF] = chip->V[x] >> 7;
+    chip->V[x] <<= 1;
+    chip->PC += 2;
+}
+
+void eight_case(chip8 *chip, uint16_t opcode)
+{
+    uint16_t index = opcode & 0x000F;
+    void (*cases[])(chip8 *, uint16_t) = { ld,  or,  and,  xor, add,
+                                           sub, shr, subn, shl };
+    // jump table of possibilities
+    if (index == 0xE)
+        cases[8](chip, opcode);
+    // the 8th instruction is 8xyE
+    if (index <= 7)
+        cases[index](chip, opcode);
+    else
     {
-    case 0x0000:
-        chip->V[x] = chip->V[y];
-        break;
-    case 0x0001:
-        chip->V[x] = chip->V[y] | chip->V[x];
-        break;
-    case 0x0002:
-        chip->V[x] = chip->V[y] & chip->V[x];
-        break;
-    case 0x0003:
-        chip->V[x] = chip->V[y] ^ chip->V[x];
-        break;
-    case 0x0004:
-        chip->V[x] = chip->V[y] + chip->V[x];
-        if (chip->V[y] > (0xFF - chip->V[x]))
-            chip->V[0xF] = 1;
-        else
-            chip->V[0xF] = 0;
-        break;
-    case 0x0005:
-        chip->V[x] = chip->V[y] - chip->V[x];
-        if (chip->V[y] > (0xFF - chip->V[x]))
-            chip->V[0xF] = 0;
-        else
-            chip->V[0xF] = 1;
-        break;
-    case 0x0006:
-        chip->V[0xF] = chip->V[x] & 0x1;
-        chip->V[x] >>= 1;
-        break;
-    case 0x0007:
-        if (chip->V[x] < chip->V[y])
-            chip->V[0xF] = 0;
-        else
-            chip->V[0xF] = 1;
-        chip->V[x] = chip->V[y] + chip->V[x];
-        break;
-    case 0x000E:
-        chip->V[0xF] = chip->V[x] >> 7;
-        chip->V[x] <<= 1;
-        break;
-    default:
         fprintf(stderr, "Unknown opcode !");
         exit(1);
     }
-    chip->PC += 2;
 }
 
 // 9xy0 (Skip next instruction if Vx != Vy)
