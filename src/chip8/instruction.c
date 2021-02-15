@@ -1,5 +1,6 @@
 #include "chip8.h"
 
+// plural cases for 0
 void zero_case(chip8 *chip, uint16_t opcode)
 {
     opcode &= 0x000F; // mask the 3 first
@@ -80,4 +81,161 @@ void five_case(chip8 *chip, uint16_t opcode)
         chip->PC += 4;
     else
         chip->PC += 2;
+}
+
+// 6xkk (Set Vx = kk)
+void six_case(chip8 *chip, uint16_t opcode)
+{
+    // shift to turn 0x0X00 → 0x000X
+    uint16_t index = opcode & 0x0F00 >> 8;
+
+    uint16_t val = opcode & 0x00FF;
+    chip->V[index] = val;
+}
+
+// 7xkk (Set Vx = Vx + kk)
+void seven_case(chip8 *chip, uint16_t opcode)
+{
+    // shift to turn 0x0X00 → 0x000X
+    uint16_t index = opcode & 0x0F00 >> 8;
+
+    uint16_t val = opcode & 0x00FF;
+    chip->V[index] += val;
+}
+
+// plural cases for 8
+// here we got a lot of them so we'll also use a jump table.
+
+void ld(chip8 *chip, uint16_t opcode)
+{
+    uint16_t x = opcode & 0x0F00 >> 8;
+    uint16_t y = opcode & 0x00F0 >> 4;
+    chip->V[x] = chip->V[y];
+    chip->PC += 2;
+}
+
+void or (chip8 * chip, uint16_t opcode)
+{
+    uint16_t x = opcode & 0x0F00 >> 8;
+    uint16_t y = opcode & 0x00F0 >> 4;
+    chip->V[x] = chip->V[y] | chip->V[x];
+    chip->PC += 2;
+}
+
+void and (chip8 * chip, uint16_t opcode)
+{
+    uint16_t x = opcode & 0x0F00 >> 8;
+    uint16_t y = opcode & 0x00F0 >> 4;
+    chip->V[x] = chip->V[y] & chip->V[x];
+    chip->PC += 2;
+}
+
+void xor(chip8 *chip, uint16_t opcode)
+{
+    uint16_t x = opcode & 0x0F00 >> 8;
+    uint16_t y = opcode & 0x00F0 >> 4;
+    chip->V[x] = chip->V[y] ^ chip->V[x];
+    chip->PC += 2;
+}
+
+void add(chip8 *chip, uint16_t opcode)
+{
+    uint16_t x = opcode & 0x0F00 >> 8;
+    uint16_t y = opcode & 0x00F0 >> 4;
+    chip->V[x] = chip->V[y] + chip->V[x];
+    if (chip->V[y] > (0xFF - chip->V[x]))
+        chip->V[0xF] = 1;
+    else
+        chip->V[0xF] = 0;
+    chip->PC += 2;
+}
+
+void sub(chip8 *chip, uint16_t opcode)
+{
+    uint16_t x = opcode & 0x0F00 >> 8;
+    uint16_t y = opcode & 0x00F0 >> 4;
+    chip->V[x] = chip->V[y] - chip->V[x];
+    if (chip->V[y] > (0xFF - chip->V[x]))
+        chip->V[0xF] = 0;
+    else
+        chip->V[0xF] = 1;
+    chip->PC += 2;
+}
+
+void shr(chip8 *chip, uint16_t opcode)
+{
+    uint16_t x = opcode & 0x0F00 >> 8;
+    chip->V[0xF] = chip->V[x] & 0x1;
+    chip->V[x] >>= 1;
+    chip->PC += 2;
+}
+
+void subn(chip8 *chip, uint16_t opcode)
+{
+    uint16_t x = opcode & 0x0F00 >> 8;
+    uint16_t y = opcode & 0x00F0 >> 4;
+    if (chip->V[x] < chip->V[y])
+        chip->V[0xF] = 0;
+    else
+        chip->V[0xF] = 1;
+    chip->V[x] = chip->V[y] + chip->V[x];
+    chip->PC += 2;
+}
+
+void shl(chip8 *chip, uint16_t opcode)
+{
+    uint16_t x = opcode & 0x0F00 >> 8;
+    chip->V[0xF] = chip->V[x] >> 7;
+    chip->V[x] <<= 1;
+    chip->PC += 2;
+}
+
+void eight_case(chip8 *chip, uint16_t opcode)
+{
+    uint16_t index = opcode & 0x000F;
+    void (*cases[])(chip8 *, uint16_t) = { ld,  or,  and,  xor, add,
+                                           sub, shr, subn, shl };
+    // jump table of possibilities
+    if (index == 0xE)
+        cases[8](chip, opcode);
+    // the 8th instruction is 8xyE
+    if (index <= 7)
+        cases[index](chip, opcode);
+    else
+    {
+        fprintf(stderr, "Unknown opcode !");
+        exit(1);
+    }
+}
+
+// 9xy0 (Skip next instruction if Vx != Vy)
+void nine_case(chip8 *chip, uint16_t opcode)
+{
+    uint16_t val1 = chip->V[opcode & 0x0F00 >> 8];
+    uint16_t val2 = chip->V[opcode & 0x00F0 >> 4];
+    if (val1 != val2)
+        chip->PC += 4;
+    else
+        chip->PC += 2;
+}
+
+// Annn (Set I = NNN)
+void a_case(chip8 *chip, uint16_t opcode)
+{
+    chip->I = opcode & 0x0FFF;
+    chip->PC += 2;
+}
+
+// Bnnn (Jump to location nnn + V0)
+void b_case(chip8 *chip, uint16_t opcode)
+{
+    chip->PC = (opcode & 0x0FFF) + (chip->V[0x0]);
+}
+
+// Cxkk (Set Vx = kk AND random number)
+void c_case(chip8 *chip, uint16_t opcode)
+{
+    uint16_t val = (rand() % (0xFF + 1)) & (opcode & 0x00FF);
+    chip->V[opcode & 0x0F00 >> 8] = val;
+    chip->PC += 2;
 }

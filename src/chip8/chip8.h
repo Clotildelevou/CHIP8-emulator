@@ -29,4 +29,11 @@ void two_case(chip8 *chip, uint16_t opcode);
 void three_case(chip8 *chip, uint16_t opcode);
 void four_case(chip8 *chip, uint16_t opcode);
 void five_case(chip8 *chip, uint16_t opcode);
+void six_case(chip8 *chip, uint16_t opcode);
+void seven_case(chip8 *chip, uint16_t opcode);
+void eight_case(chip8 *chip, uint16_t opcode);
+void nine_case(chip8 *chip, uint16_t opcode);
+void a_case(chip8 *chip, uint16_t opcode);
+void b_case(chip8 *chip, uint16_t opcode);
+void c_case(chip8 *chip, uint16_t opcode);
 #endif

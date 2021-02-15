@@ -40,51 +40,21 @@ void emulate(chip8 *chip)
     uint16_t opcode = chip->memory[chip->PC] << 8
         | chip->memory[chip->PC + 1]; // fetches the opcode
 
-    uint16_t get_first = 0xF000; // mask the 3 last
+    void (*cases[])(chip8 *, uint16_t) = { zero_case,  one_case,   two_case,
+                                           three_case, four_case,  five_case,
+                                           six_case,   seven_case, eight_case,
+                                           nine_case,  a_case,     b_case,
+                                           c_case };
+    // jump table to handle cases
+    // the opcode can be : 0xYnnn with Y in [0-F]
+    // you can read about nnn in src/chip8/instruction.c
 
-    switch (opcode & get_first)
-    {
-    case 0x0000:
-        zero_case(chip, opcode);
-        break;
-    case 0x1000:
-        one_case(chip, opcode);
-        break;
-    case 0x2000:
-        two_case(chip, opcode);
-        break;
-    case 0x3000:
-        three_case(chip, opcode);
-        break;
-    case 0x4000:
-        four_case(chip, opcode);
-        break;
-    case 0x5000:
-        five_case(chip, opcode);
-        break;
-    case 0x6000:
-        break;
-    case 0x7000:
-        break;
-    case 0x8000:
-        break;
-    case 0x9000:
-        break;
-    case 0xA000:
-        break;
-    case 0xB000:
-        break;
-    case 0xC000:
-        break;
-    case 0xD000:
-        break;
-    case 0xE000:
-        break;
-    case 0xF000:
-        break;
-    default:
-        fprintf(stderr, "Unkown opcode !");
-        exit(1);
-        break;
-    }
+    uint16_t index = opcode & 0xF000 >> 12;
+    // We can directly use the first nibble of the opcode to call functions
+    // of the jump table.
+    // For example: your opcode is 0x8xy0
+    // 0x8xy0 & 0xF000 = 0x8000
+    // 0x8000 >> 12 = 0x8 = 8
+    // cases[8] = eight_case
+    cases[index](chip, opcode);
 }
