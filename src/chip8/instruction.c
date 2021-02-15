@@ -1,5 +1,6 @@
 #include "chip8.h"
 
+// plural cases for 0
 void zero_case(chip8 *chip, uint16_t opcode)
 {
     opcode &= 0x000F; // mask the 3 first
@@ -77,6 +78,94 @@ void five_case(chip8 *chip, uint16_t opcode)
     // shift to turn 0x00Y0 → 0x000Y
     uint16_t y_index = opcode & 0x00F0 >> 8;
     if (chip->V[x_index] == chip->V[y_index])
+        chip->PC += 4;
+    else
+        chip->PC += 2;
+}
+
+// 6xkk (Set Vx = kk)
+void six_case(chip8 *chip, uint16_t opcode)
+{
+    // shift to turn 0x0X00 → 0x000X
+    uint16_t index = opcode & 0x0F00 >> 8;
+
+    uint16_t val = opcode & 0x00FF;
+    chip->V[index] = val;
+}
+
+// 7xkk (Set Vx = Vx + kk)
+void seven_case(chip8 *chip, uint16_t opcode)
+{
+    // shift to turn 0x0X00 → 0x000X
+    uint16_t index = opcode & 0x0F00 >> 8;
+
+    uint16_t val = opcode & 0x00FF;
+    chip->V[index] += val;
+}
+
+// plural cases for 8
+void height_case(chip8 *chip, uint16_t opcode)
+{
+    uint16_t last = opcode & 0x000F;
+    uint16_t x = opcode & 0x0F00 >> 8;
+    uint16_t y = opcode & 0x00F0 >> 4;
+
+    switch (last)
+    {
+    case 0x0000:
+        chip->V[x] = chip->V[y];
+        break;
+    case 0x0001:
+        chip->V[x] = chip->V[y] | chip->V[x];
+        break;
+    case 0x0002:
+        chip->V[x] = chip->V[y] & chip->V[x];
+        break;
+    case 0x0003:
+        chip->V[x] = chip->V[y] ^ chip->V[x];
+        break;
+    case 0x0004:
+        chip->V[x] = chip->V[y] + chip->V[x];
+        if (chip->V[y] > (0xFF - chip->V[x]))
+            chip->V[0xF] = 1;
+        else
+            chip->V[0xF] = 0;
+        break;
+    case 0x0005:
+        chip->V[x] = chip->V[y] - chip->V[x];
+        if (chip->V[y] > (0xFF - chip->V[x]))
+            chip->V[0xF] = 0;
+        else
+            chip->V[0xF] = 1;
+        break;
+    case 0x0006:
+        chip->V[0xF] = chip->V[x] & 0x1;
+        chip->V[x] >>= 1;
+        break;
+    case 0x0007:
+        if (chip->V[x] < chip->V[y])
+            chip->V[0xF] = 0;
+        else
+            chip->V[0xF] = 1;
+        chip->V[x] = chip->V[y] + chip->V[x];
+        break;
+    case 0x000E:
+        chip->V[0xF] = chip->V[x] >> 7;
+        chip->V[x] <<= 1;
+        break;
+    default:
+        fprintf(stderr, "Unknown opcode !");
+        exit(1);
+    }
+    chip->PC += 2;
+}
+
+// 9xy0 (Skip next instruction if Vx != Vy)
+void nine_case(chip8 *chip, uint16_t opcode)
+{
+    uint16_t val1 = chip->V[opcode & 0x0F00 >> 8];
+    uint16_t val2 = chip->V[opcode & 0x00F0 >> 4];
+    if (val1 != val2)
         chip->PC += 4;
     else
         chip->PC += 2;
