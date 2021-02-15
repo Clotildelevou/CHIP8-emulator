@@ -218,3 +218,24 @@ void nine_case(chip8 *chip, uint16_t opcode)
     else
         chip->PC += 2;
 }
+
+// Annn (Set I = NNN)
+void a_case(chip8 *chip, uint16_t opcode)
+{
+    chip->I = opcode & 0x0FFF;
+    chip->PC += 2;
+}
+
+// Bnnn (Jump to location nnn + V0)
+void b_case(chip8 *chip, uint16_t opcode)
+{
+    chip->PC = (opcode & 0x0FFF) + (chip->V[0x0]);
+}
+
+// Cxkk (Set Vx = kk AND random number)
+void c_case(chip8 *chip, uint16_t opcode)
+{
+    uint16_t val = (rand() % (0xFF + 1)) & (opcode & 0x00FF);
+    chip->V[opcode & 0x0F00 >> 8] = val;
+    chip->PC += 2;
+}
