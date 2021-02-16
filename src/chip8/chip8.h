@@ -36,4 +36,5 @@ void nine_case(chip8 *chip, uint16_t opcode);
 void a_case(chip8 *chip, uint16_t opcode);
 void b_case(chip8 *chip, uint16_t opcode);
 void c_case(chip8 *chip, uint16_t opcode);
+void d_case(chip8 *chip, uint16_t opcode);
 #endif

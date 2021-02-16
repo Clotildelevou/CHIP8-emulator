@@ -44,7 +44,7 @@ void emulate(chip8 *chip)
                                            three_case, four_case,  five_case,
                                            six_case,   seven_case, eight_case,
                                            nine_case,  a_case,     b_case,
-                                           c_case };
+                                           c_case,     d_case };
     // jump table to handle cases
     // the opcode can be : 0xYnnn with Y in [0-F]
     // you can read about nnn in src/chip8/instruction.c

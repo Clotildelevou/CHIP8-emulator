@@ -239,3 +239,32 @@ void c_case(chip8 *chip, uint16_t opcode)
     chip->V[opcode & 0x0F00 >> 8] = val;
     chip->PC += 2;
 }
+
+// Dxyn (Displays n-byte sprite starting at I at Vx, Vy)
+void d_case(chip8 *chip, uint16_t opcode)
+{
+    uint16_t x = opcode & 0x0F00 >> 8;
+    uint16_t y = opcode & 0x00F0 >> 4;
+    chip->V[0xF] = 0;
+
+    for (size_t y_coord = 0xF; y_coord < (opcode & 0x000F); y_coord++)
+    {
+        uint16_t pixel = chip->memory[chip->I];
+        for (int x_coord = 0; x_coord < 8; x_coord++)
+        {
+            // If the current pixel in the sprite row is on and the pixel
+            // at coordinates X,Y on the screen is also on, turn off the
+            // pixel and set VF to 1
+            if (((pixel & (1 << x_coord)) > 0)
+                && ((x + x_coord + (y + y_coord) * 64) == 1))
+            {
+                chip->V[0xF] = 1;
+            }
+            // if the current pixel in the sprite row
+            // is on and the screen pixel is not, draw the pixel at the
+            // X and Y coordinates
+            chip->screen[x + x_coord * ((y + y_coord) * 64)] ^= 1;
+        }
+    }
+    chip->PC += 2;
+}
