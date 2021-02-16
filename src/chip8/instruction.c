@@ -106,7 +106,8 @@ void seven_case(chip8 *chip, uint16_t opcode)
 // plural cases for 8
 // here we got a lot of them so we'll also use a jump table.
 
-void ld(chip8 *chip, uint16_t opcode)
+// 8xy0 (Set Vx = Vy)
+static void ld(chip8 *chip, uint16_t opcode)
 {
     uint16_t x = opcode & 0x0F00 >> 8;
     uint16_t y = opcode & 0x00F0 >> 4;
@@ -114,7 +115,8 @@ void ld(chip8 *chip, uint16_t opcode)
     chip->PC += 2;
 }
 
-void or (chip8 * chip, uint16_t opcode)
+// 8xy1 (Vx = Vx OR Vy)
+static void or (chip8 * chip, uint16_t opcode)
 {
     uint16_t x = opcode & 0x0F00 >> 8;
     uint16_t y = opcode & 0x00F0 >> 4;
@@ -122,7 +124,8 @@ void or (chip8 * chip, uint16_t opcode)
     chip->PC += 2;
 }
 
-void and (chip8 * chip, uint16_t opcode)
+// 8xy2 (Vx = Vx AND Vy)
+static void and (chip8 * chip, uint16_t opcode)
 {
     uint16_t x = opcode & 0x0F00 >> 8;
     uint16_t y = opcode & 0x00F0 >> 4;
@@ -130,7 +133,8 @@ void and (chip8 * chip, uint16_t opcode)
     chip->PC += 2;
 }
 
-void xor(chip8 *chip, uint16_t opcode)
+// 8xy3 (Vx = Vx XOR Vy)
+static void xor(chip8 *chip, uint16_t opcode)
 {
     uint16_t x = opcode & 0x0F00 >> 8;
     uint16_t y = opcode & 0x00F0 >> 4;
@@ -138,11 +142,13 @@ void xor(chip8 *chip, uint16_t opcode)
     chip->PC += 2;
 }
 
-void add(chip8 *chip, uint16_t opcode)
+//8xy4 (Set Vx = Vx + Vy, set VF = carry)
+static void add(chip8 *chip, uint16_t opcode)
 {
     uint16_t x = opcode & 0x0F00 >> 8;
     uint16_t y = opcode & 0x00F0 >> 4;
     chip->V[x] = chip->V[y] + chip->V[x];
+
     if (chip->V[y] > (0xFF - chip->V[x]))
         chip->V[0xF] = 1;
     else
@@ -150,7 +156,8 @@ void add(chip8 *chip, uint16_t opcode)
     chip->PC += 2;
 }
 
-void sub(chip8 *chip, uint16_t opcode)
+// 8xy5 (Set Vx = Vx - Vy, set VF = NOT borrow)
+static void sub(chip8 *chip, uint16_t opcode)
 {
     uint16_t x = opcode & 0x0F00 >> 8;
     uint16_t y = opcode & 0x00F0 >> 4;
@@ -162,7 +169,8 @@ void sub(chip8 *chip, uint16_t opcode)
     chip->PC += 2;
 }
 
-void shr(chip8 *chip, uint16_t opcode)
+// 8xy6 (Set Vx = Vx shifted right of 1 byte)
+static void shr(chip8 *chip, uint16_t opcode)
 {
     uint16_t x = opcode & 0x0F00 >> 8;
     chip->V[0xF] = chip->V[x] & 0x1;
@@ -170,7 +178,8 @@ void shr(chip8 *chip, uint16_t opcode)
     chip->PC += 2;
 }
 
-void subn(chip8 *chip, uint16_t opcode)
+// 8xy7 (Set Vx = Vy - Vx, set VF = NOT borrow)
+static void subn(chip8 *chip, uint16_t opcode)
 {
     uint16_t x = opcode & 0x0F00 >> 8;
     uint16_t y = opcode & 0x00F0 >> 4;
@@ -182,7 +191,8 @@ void subn(chip8 *chip, uint16_t opcode)
     chip->PC += 2;
 }
 
-void shl(chip8 *chip, uint16_t opcode)
+// 8xy6 (Set Vx = Vx shifted left of 1 byte)
+static void shl(chip8 *chip, uint16_t opcode)
 {
     uint16_t x = opcode & 0x0F00 >> 8;
     chip->V[0xF] = chip->V[x] >> 7;
@@ -190,6 +200,7 @@ void shl(chip8 *chip, uint16_t opcode)
     chip->PC += 2;
 }
 
+// Jump table for the 8nnn case
 void eight_case(chip8 *chip, uint16_t opcode)
 {
     uint16_t index = opcode & 0x000F;
@@ -265,6 +276,39 @@ void d_case(chip8 *chip, uint16_t opcode)
             // X and Y coordinates
             chip->screen[x + x_coord * ((y + y_coord) * 64)] ^= 1;
         }
+    }
+    chip->PC += 2;
+}
+
+// Ex9E (Skip next instruction if key with the value of Vx is pressed)
+static void skp(chip8 *chip, uint16_t opcode)
+{
+    if (chip->key[chip->V[opcode & 0x0F00 >> 8]] != 0)
+    {
+        chip->PC += 2;
+    }
+}
+
+// Ex9E (Skip next instruction if key with the value of Vx is NOT pressed)
+static void skpn(chip8 *chip, uint16_t opcode)
+{
+    if (chip->key[chip->V[opcode & 0x0F00 >> 8]] == 0)
+    {
+        chip->PC += 2;
+    }
+}
+
+// Handle Exnn cases
+void e_case(chip8 *chip, uint16_t opcode)
+{
+    if ((opcode & 0x00F0) == 0x0090)
+        skp(chip, opcode);
+    if ((opcode & 0x00F0) == 0x00A0)
+        skpn(chip, opcode);
+    else
+    {
+        fprintf(stderr, "Unknown opcode !");
+        exit(1);
     }
     chip->PC += 2;
 }

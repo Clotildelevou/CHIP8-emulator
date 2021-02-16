@@ -30,8 +30,17 @@ chip8 *init_chip8(void)
         fprintf(stderr, "Couldn't init display");
         exit(1);
     }
+
+    chip->key = calloc(16 * sizeof(uint8_t), 1); // init keypad
+    if (chip->key == NULL)
+    {
+        fprintf(stderr, "Couldn't init keypad");
+        exit(1);
+    }
     chip->SP = 0; // set stack pointer
     chip->PC = 0x200; // set program counter
+    chip->delay_timer = 0; // set delay timer
+    chip->sound_timer = 0; // set sound timer
     return chip;
 }
 
@@ -44,7 +53,7 @@ void emulate(chip8 *chip)
                                            three_case, four_case,  five_case,
                                            six_case,   seven_case, eight_case,
                                            nine_case,  a_case,     b_case,
-                                           c_case,     d_case };
+                                           c_case,     d_case,     e_case };
     // jump table to handle cases
     // the opcode can be : 0xYnnn with Y in [0-F]
     // you can read about nnn in src/chip8/instruction.c
