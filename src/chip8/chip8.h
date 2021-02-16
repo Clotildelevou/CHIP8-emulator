@@ -18,6 +18,7 @@ typedef struct chip8
     uint16_t *stack; // 16 levels stack
     uint8_t *memory; // 4Kb memory
     uint8_t *screen; // 2048pixel screen (64x32p)
+    uint8_t *key; // Keypad
 } chip8;
 
 chip8 *init_chip8(void); // inits the chip8
@@ -36,4 +37,6 @@ void nine_case(chip8 *chip, uint16_t opcode);
 void a_case(chip8 *chip, uint16_t opcode);
 void b_case(chip8 *chip, uint16_t opcode);
 void c_case(chip8 *chip, uint16_t opcode);
+void d_case(chip8 *chip, uint16_t opcode);
+void e_case(chip8 *chip, uint16_t opcode);
 #endif
