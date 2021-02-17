@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef struct chip8
 {
@@ -18,7 +19,9 @@ typedef struct chip8
     uint16_t *stack; // 16 levels stack
     uint8_t *memory; // 4Kb memory
     uint8_t *screen; // 2048pixel screen (64x32p)
-    uint8_t *key; // Keypad
+    uint8_t *key_flags; // Keypad
+    uint8_t *saved_keys; // save keypad state
+    int key_wait;
 } chip8;
 
 chip8 *init_chip8(void); // inits the chip8
@@ -39,4 +42,6 @@ void b_case(chip8 *chip, uint16_t opcode);
 void c_case(chip8 *chip, uint16_t opcode);
 void d_case(chip8 *chip, uint16_t opcode);
 void e_case(chip8 *chip, uint16_t opcode);
+void f_case(chip8 *chip, uint16_t opcode);
+
 #endif

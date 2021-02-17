@@ -5,42 +5,49 @@ chip8 *init_chip8(void)
     chip8 *chip = malloc(sizeof(chip8)); // init chip8 object
     if (chip == NULL)
     {
-        fprintf(stderr, "Couldn't init display");
+        fprintf(stderr, "Couldn't init chip\n");
         exit(1);
     }
 
     chip->stack = calloc(16 * sizeof(uint16_t), 1); // init stack
     if (chip->stack == NULL)
     {
-        fprintf(stderr, "Couldn't init display");
+        fprintf(stderr, "Couldn't init stack\n");
         exit(1);
     }
 
     chip->memory = calloc(4096 * sizeof(uint8_t), 1); // init memory
     if (chip->memory == NULL)
     {
-        fprintf(stderr, "Couldn't init display");
+        fprintf(stderr, "Couldn't init memory\n");
         exit(1);
         return NULL;
     }
 
     chip->screen = calloc(2048 * sizeof(uint8_t), 1); // init screen
-    if (chip->memory == NULL)
+    if (chip->screen == NULL)
     {
-        fprintf(stderr, "Couldn't init display");
+        fprintf(stderr, "Couldn't init display\n");
         exit(1);
     }
 
-    chip->key = calloc(16 * sizeof(uint8_t), 1); // init keypad
-    if (chip->key == NULL)
+    chip->key_flags = calloc(16 * sizeof(uint8_t), 1);
+    if (chip->key_flags == NULL)
     {
-        fprintf(stderr, "Couldn't init keypad");
+        fprintf(stderr, "Couldn't init key_flags\n");
+        exit(1);
+    }
+    chip->saved_keys = calloc(16 * sizeof(uint8_t), 1);
+    if (chip->saved_keys == NULL)
+    {
+        fprintf(stderr, "Couldn't init saved keys\n");
         exit(1);
     }
     chip->SP = 0; // set stack pointer
     chip->PC = 0x200; // set program counter
     chip->delay_timer = 0; // set delay timer
     chip->sound_timer = 0; // set sound timer
+    chip->key_wait = 0;
     return chip;
 }
 
@@ -49,11 +56,11 @@ void emulate(chip8 *chip)
     uint16_t opcode = chip->memory[chip->PC] << 8
         | chip->memory[chip->PC + 1]; // fetches the opcode
 
-    void (*cases[])(chip8 *, uint16_t) = { zero_case,  one_case,   two_case,
-                                           three_case, four_case,  five_case,
-                                           six_case,   seven_case, eight_case,
-                                           nine_case,  a_case,     b_case,
-                                           c_case,     d_case,     e_case };
+    void (*cases[])(chip8 *,
+                    uint16_t) = { zero_case,  one_case,  two_case, three_case,
+                                  four_case,  five_case, six_case, seven_case,
+                                  eight_case, nine_case, a_case,   b_case,
+                                  c_case,     d_case,    e_case,   f_case };
     // jump table to handle cases
     // the opcode can be : 0xYnnn with Y in [0-F]
     // you can read about nnn in src/chip8/instruction.c

@@ -283,7 +283,7 @@ void d_case(chip8 *chip, uint16_t opcode)
 // Ex9E (Skip next instruction if key with the value of Vx is pressed)
 static void skp(chip8 *chip, uint16_t opcode)
 {
-    if (chip->key[chip->V[opcode & 0x0F00 >> 8]] != 0)
+    if (chip->key_flags[chip->V[opcode & 0x0F00 >> 8]] != 0)
     {
         chip->PC += 2;
     }
@@ -292,7 +292,7 @@ static void skp(chip8 *chip, uint16_t opcode)
 // Ex9E (Skip next instruction if key with the value of Vx is NOT pressed)
 static void skpn(chip8 *chip, uint16_t opcode)
 {
-    if (chip->key[chip->V[opcode & 0x0F00 >> 8]] == 0)
+    if (chip->key_flags[chip->V[opcode & 0x0F00 >> 8]] == 0)
     {
         chip->PC += 2;
     }
@@ -311,4 +311,44 @@ void e_case(chip8 *chip, uint16_t opcode)
         exit(1);
     }
     chip->PC += 2;
+}
+
+// Fx07 (Set Vx = delay timer value)
+static void ld_dt(chip8 *chip, uint16_t opcode)
+{
+    chip->V[opcode & 0x0F00 >> 8] = chip->delay_timer;
+    chip->PC += 2;
+}
+
+// Fx0A (Wait for a key press, store the value in Vx)
+static void ld_k(chip8 *chip, uint16_t opcode)
+{
+    if (chip->key_wait == 0)
+    {
+        memcpy(&chip->saved_keys, &chip->key_flags, 8);
+        chip->key_wait = 1;
+    }
+    else
+    {
+        for (size_t i = 0; i < 16; i++)
+        {
+            if ((chip->saved_keys[i] == 0) && (chip->key_flags[i] == 1))
+            {
+                chip->key_wait = 0;
+                chip->V[opcode & 0x0F00 >> 8] = i;
+                chip->PC += 2;
+            }
+            else
+                chip->saved_keys[i] = chip->key_flags[i];
+        }
+    }
+}
+
+// Fxnn case
+void f_case(chip8 *chip, uint16_t opcode)
+{
+    if ((opcode & 0x00FF) == 0x0007)
+        ld_dt(chip, opcode);
+    else
+        ld_k(chip, opcode);
 }
