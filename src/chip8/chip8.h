@@ -43,5 +43,4 @@ void c_case(chip8 *chip, uint16_t opcode);
 void d_case(chip8 *chip, uint16_t opcode);
 void e_case(chip8 *chip, uint16_t opcode);
 void f_case(chip8 *chip, uint16_t opcode);
-
 #endif

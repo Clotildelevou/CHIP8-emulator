@@ -344,11 +344,99 @@ static void ld_k(chip8 *chip, uint16_t opcode)
     }
 }
 
+// Fx15 (Set delay timer = Vx)
+static void ld_dt2(chip8 *chip, uint16_t opcode)
+{
+    chip->delay_timer = chip->V[opcode & 0x0F00 >> 8];
+    chip->PC += 2;
+}
+
+// Fx18 (Set sound timer = Vx)
+static void ld_st(chip8 *chip, uint16_t opcode)
+{
+    chip->sound_timer = chip->V[opcode & 0x0F00 >> 8];
+    chip->PC += 2;
+}
+
+// Fx1E (Set I = I + Vx)
+static void add_i(chip8 *chip, uint16_t opcode)
+{
+    chip->I += chip->V[opcode & 0x0F00 >> 8];
+    chip->PC += 2;
+}
+
+// Fx29 (Set I = location of sprite for digit Vx)
+static void ld_f(chip8 *chip, uint16_t opcode)
+{
+    uint16_t x_index = (opcode & 0x0F00) >> 8;
+    chip->I = (chip->V[x_index] * 0x5);
+    chip->PC += 2;
+}
+
+// Fx33 (Store BCD representation of Vx in memory locations I, I+1, and I+2)
+static void ld_b(chip8 *chip, uint16_t opcode)
+{
+    uint16_t x_index = (opcode & 0x0F00) >> 8;
+    chip->memory[chip->I] = chip->V[x_index] / 100;
+    chip->memory[chip->I + 1] = (chip->V[x_index] / 10) % 10;
+    chip->memory[chip->I + 2] = (chip->V[x_index] % 100) % 10;
+    chip->PC += 2;
+}
+
+// Fx55 (Store registers V0 through Vx in memory starting at location I)
+static void ld_i(chip8 *chip, uint16_t opcode)
+{
+    uint16_t max = (opcode & 0x0F00) >> 8;
+    for (uint16_t i = 0x0; i < max; i++)
+        chip->memory[chip->I + i] = chip->V[i];
+    chip->PC += 2;
+}
+
+// Fx65 (Store registers through Vx from memory starting at location I)
+static void ld_i2(chip8 *chip, uint16_t opcode)
+{
+    uint16_t max = (opcode & 0x0F00) >> 8;
+    for (uint16_t i = 0x0; i < max; i++)
+        chip->V[i] = chip->memory[chip->I + i];
+    chip->PC += 2;
+}
+
 // Fxnn case
 void f_case(chip8 *chip, uint16_t opcode)
 {
-    if ((opcode & 0x00FF) == 0x0007)
+    uint16_t id = (opcode & 0x00FF);
+    switch (id)
+    {
+    case 0x0007:
         ld_dt(chip, opcode);
-    else
+        break;
+    case 0x000A:
         ld_k(chip, opcode);
+        break;
+    case 0x0015:
+        ld_dt2(chip, opcode);
+        break;
+    case 0x0018:
+        ld_st(chip, opcode);
+        break;
+    case 0x0029:
+        ld_f(chip, opcode);
+        break;
+    case 0x001E:
+        add_i(chip, opcode);
+        break;
+    case 0x0033:
+        ld_b(chip, opcode);
+        break;
+    case 0x0055:
+        ld_i(chip, opcode);
+        break;
+    case 0x0065:
+        ld_i2(chip, opcode);
+        break;
+    default:
+        fprintf(stderr, "Unkown opcode !\n");
+        exit(1);
+        break;
+    }
 }
