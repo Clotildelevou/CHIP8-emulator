@@ -10,6 +10,7 @@ The whole instruction set is done. A nice refacto is needeed.
 **Tests**
 ▰▱▱▱▱▱▱▱▱▱▱▱▱ 5%
 Currently writing tests.
+
 **Display**
 ▰▱▱▱▱▱▱ 15%
 Opcodes for the display are OK. Must do the chip8 fontset.
