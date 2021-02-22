@@ -45,23 +45,21 @@ if (ENABLE_TESTS)
 
     include (CTest)
 
-######Lib1
-####file(GLOB_RECURSE#LIB1_TESTS#RELATIVE#${CMAKE_SOURCE_DIR}
-########"tests/unit_tests/lib1/*.c")
-####add_executable(lib1_unit#${LIB1_TESTS})
-####target_compile_options(lib1_unit#PRIVATE#${CFLAGS})
-####target_link_libraries(lib1_unit#PRIVATE#lib1)
-####target_link_options(lib1_unit#PRIVATE#${LDFLAGS_TEST})
-####add_test(NAME#lib1_unit#COMMAND#${EXC_TST}/lib1_unit)
+    #chip8
+    file(GLOB_RECURSE CHIP8_TESTS RELATIVE ${CMAKE_SOURCE_DIR}
+        "tests/unit_tests/chip8/*.c")
+    add_executable(chip8_unit ${CHIP8_TESTS})
+    target_compile_options(chip8_unit PRIVATE ${CFLAGS})
+    add_test(NAME chip8_unit COMMAND ${EXC_TST}/chip8_unit)
 
-######Lib2
-####file(GLOB_RECURSE#LIB2_TESTS#RELATIVE#${CMAKE_SOURCE_DIR}
-########"tests/unit_tests/lib2/*.c")
-####add_executable(lib2_unit#${LIB2_TESTS})
-####target_compile_options(lib2_unit#PRIVATE#${CFLAGS})
-####target_link_libraries(lib2_unit#PRIVATE#lib2#lib1)
-####target_link_options(lib2_unit#PRIVATE#${LDFLAGS_TEST})
-####add_test(NAME#lib2_unit#COMMAND#${EXC_TST}/lib2_unit)
+    ######Lib2
+    ####file(GLOB_RECURSE#LIB2_TESTS#RELATIVE#${CMAKE_SOURCE_DIR}
+    ########"tests/unit_tests/lib2/*.c")
+    ####add_executable(lib2_unit#${LIB2_TESTS})
+    ####target_compile_options(lib2_unit#PRIVATE#${CFLAGS})
+    ####target_link_libraries(lib2_unit#PRIVATE#lib2#lib1)
+    ####target_link_options(lib2_unit#PRIVATE#${LDFLAGS_TEST})
+    ####add_test(NAME#lib2_unit#COMMAND#${EXC_TST}/lib2_unit)
 
 endif()
 
