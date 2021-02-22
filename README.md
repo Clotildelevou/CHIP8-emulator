@@ -8,8 +8,8 @@ A simple chip8-emulator in C language.
 The whole instruction set is done. A nice refacto is needeed.
 
 **Tests**
-▱▱▱▱▱▱▱▱▱▱▱▱▱ 0%
-I know, shame. Test are the next thing i am going to do.
+▰▱▱▱▱▱▱▱▱▱▱▱▱ 5%
+Currently writing tests.
 
 **Display**
 ▰▱▱▱▱▱▱ 15%
