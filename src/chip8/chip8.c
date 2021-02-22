@@ -51,6 +51,16 @@ chip8 *init_chip8(void)
     return chip;
 }
 
+void free_chip8(chip8 *chip)
+{
+    free(chip->stack);
+    free(chip->memory);
+    free(chip->screen);
+    free(chip->key_flags);
+    free(chip->saved_keys);
+    free(chip);
+}
+
 void emulate(chip8 *chip)
 {
     uint16_t opcode = chip->memory[chip->PC] << 8
