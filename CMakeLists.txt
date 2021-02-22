@@ -3,7 +3,7 @@
 # ==========================================
 
 cmake_minimum_required(VERSION 3.15)
-project(42sh VERSION 1.0.0 LANGUAGES C)
+project(CHIP8-emulator VERSION 1.0.0 LANGUAGES C)
 
 #Verbose option
 set(CMAKE_VERBOSE_MAKEFILE OFF)
@@ -50,6 +50,8 @@ if (ENABLE_TESTS)
         "tests/unit_tests/chip8/*.c")
     add_executable(chip8_unit ${CHIP8_TESTS})
     target_compile_options(chip8_unit PRIVATE ${CFLAGS})
+    target_link_libraries(chip8_unit PRIVATE chip8)
+    target_link_options(chip8_unit PRIVATE ${LDFLAGS_TEST})
     add_test(NAME chip8_unit COMMAND ${EXC_TST}/chip8_unit)
 
     ######Lib2
