@@ -3,10 +3,9 @@
 // plural cases for 0
 void zero_case(chip8 *chip, uint16_t opcode)
 {
-    opcode &= 0x000F; // mask the 3 first
-
+    
     // 0x00E0 CLS (Clear display)
-    if (opcode == 0x0000)
+    if ((opcode == (uint16_t)0x00E0))
     {
         for (size_t i = 0; i < 2048; i++)
         {
@@ -15,7 +14,7 @@ void zero_case(chip8 *chip, uint16_t opcode)
     }
 
     // 0x00EE RET (Return from subroutine)
-    if (opcode == 0x000E)
+    if ((opcode  == (uint16_t)0x00EE))
     {
         chip->PC = chip->SP--;
     }
@@ -23,7 +22,7 @@ void zero_case(chip8 *chip, uint16_t opcode)
     // Error
     else
     {
-        fprintf(stderr, "Unknown opcode !");
+        fprintf(stderr, "Unknown opcode %#x !\n", opcode);
         exit(1);
     }
     chip->PC += 2;
