@@ -12,7 +12,8 @@ Test(chip8_init, chip8_init)
 Test(instructions_set, zero_case)
 {
     chip8 *chip = init_chip8();
-    zero_case(chip, 0x00E0);
+    uint16_t opcode = 0x00E0;
+    zero_case(chip, opcode);
     for (size_t i = 0; i < 2048; i++)
         cr_expect_eq(chip->screen[i], 0);
 
