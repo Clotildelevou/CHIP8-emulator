@@ -5,7 +5,9 @@ int main(void)
 {
     chip8 *chip = init_chip8();
     if (chip == NULL)
-        printf("Initialisation failed.\n");
+    printf("Initialisation failed.\n");
     else
-        printf("Initialisation is a success !\n");
+    printf("Initialisation is a success !\n");
+
+    free_chip8(chip);
 }
