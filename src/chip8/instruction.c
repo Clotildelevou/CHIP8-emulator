@@ -15,7 +15,7 @@ void zero_case(chip8 *chip, uint16_t opcode)
     }
 
     // 0x00EE RET (Return from subroutine)
-    if (opcode == ret)
+    else if (opcode == ret)
     {
         chip->PC = chip->SP--;
     }
