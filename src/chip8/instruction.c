@@ -3,9 +3,10 @@
 // plural cases for 0
 void zero_case(chip8 *chip, uint16_t opcode)
 {
-    
+    uint16_t cls = 0x00E0;
+    uint16_t ret = 0x00EE;
     // 0x00E0 CLS (Clear display)
-    if ((opcode == (uint16_t)0x00E0))
+    if (opcode == cls)
     {
         for (size_t i = 0; i < 2048; i++)
         {
@@ -14,7 +15,7 @@ void zero_case(chip8 *chip, uint16_t opcode)
     }
 
     // 0x00EE RET (Return from subroutine)
-    if ((opcode  == (uint16_t)0x00EE))
+    if (opcode == ret)
     {
         chip->PC = chip->SP--;
     }
