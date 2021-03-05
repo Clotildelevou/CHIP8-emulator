@@ -114,3 +114,15 @@ Test(instructions_set, five_case_false)
     cr_expect_eq(chip->PC, pc);
     free_chip8(chip);
 }
+
+Test(instructions_set, six_case)
+{
+    chip8 *chip = init_chip8();
+    uint16_t opcode = 0x6501
+    uint16_t res = 0x0001;
+    uint16_t pc = chip->PC + 2;
+    six_case(chip, opcode);
+    cr_expect_eq(chip->PC, pc);
+    cr_expect_eq(chip->V[5], 0x0001);
+    free_chip8(chip);
+}
