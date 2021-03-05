@@ -1,6 +1,7 @@
 *.o
 *.so
 *.a
+*.swp
 build/*
 build
 CHIP8-emulator
