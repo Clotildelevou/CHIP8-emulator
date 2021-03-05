@@ -29,3 +29,13 @@ Test(instructions_set, one_case)
     cr_expect_eq(chip->PC, address);
     free_chip8(chip);
 }
+
+Test(instructions_set, two_case)
+{
+    chip8 *chip = init_chip8();
+    uint16_t opcode = 0x2895;
+    uint16_t address = 0x0895;
+    two_case(chip,  opcode);
+    cr_expect_eq(chip->PC, address);
+    free_chip8(chip);
+}
