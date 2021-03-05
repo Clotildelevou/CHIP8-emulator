@@ -43,13 +43,13 @@ void two_case(chip8 *chip, uint16_t opcode)
     chip->PC = opcode & 0x0FFF;
 }
 
-// 3xkk (Skip next instruction if Vx = kk)
+// 3xkk (Skip next instruction if Vx == kk)
 void three_case(chip8 *chip, uint16_t opcode)
 {
     uint16_t val = opcode & 0x00FF;
 
     // shift to turn 0x0X00 → 0x000X
-    uint16_t index = opcode & 0x0F00 >> 8;
+    uint16_t index = (opcode & 0x0F00) >> 8;
     if (chip->V[index] == val)
         chip->PC += 4;
     else
@@ -62,7 +62,7 @@ void four_case(chip8 *chip, uint16_t opcode)
     uint16_t val = opcode & 0x00FF;
 
     // shift to turn 0x0X00 → 0x000X
-    uint16_t index = opcode & 0x0F00 >> 8;
+    uint16_t index = (opcode & 0x0F00) >> 8;
     if (chip->V[index] != val)
         chip->PC += 4;
     else
@@ -73,10 +73,10 @@ void four_case(chip8 *chip, uint16_t opcode)
 void five_case(chip8 *chip, uint16_t opcode)
 {
     // shift to turn 0x0X00 → 0x000X
-    uint16_t x_index = opcode & 0x0F00 >> 8;
+    uint16_t x_index = (opcode & 0x0F00) >> 8;
 
     // shift to turn 0x00Y0 → 0x000Y
-    uint16_t y_index = opcode & 0x00F0 >> 8;
+    uint16_t y_index = (opcode & 0x00F0) >> 8;
     if (chip->V[x_index] == chip->V[y_index])
         chip->PC += 4;
     else
@@ -87,7 +87,7 @@ void five_case(chip8 *chip, uint16_t opcode)
 void six_case(chip8 *chip, uint16_t opcode)
 {
     // shift to turn 0x0X00 → 0x000X
-    uint16_t index = opcode & 0x0F00 >> 8;
+    uint16_t index = (opcode & 0x0F00) >> 8;
 
     uint16_t val = opcode & 0x00FF;
     chip->V[index] = val;
@@ -97,7 +97,7 @@ void six_case(chip8 *chip, uint16_t opcode)
 void seven_case(chip8 *chip, uint16_t opcode)
 {
     // shift to turn 0x0X00 → 0x000X
-    uint16_t index = opcode & 0x0F00 >> 8;
+    uint16_t index = (opcode & 0x0F00) >> 8;
 
     uint16_t val = opcode & 0x00FF;
     chip->V[index] += val;
@@ -109,8 +109,8 @@ void seven_case(chip8 *chip, uint16_t opcode)
 // 8xy0 (Set Vx = Vy)
 static void ld(chip8 *chip, uint16_t opcode)
 {
-    uint16_t x = opcode & 0x0F00 >> 8;
-    uint16_t y = opcode & 0x00F0 >> 4;
+    uint16_t x = (opcode & 0x0F00) >> 8;
+    uint16_t y = (opcode & 0x00F0) >> 4;
     chip->V[x] = chip->V[y];
     chip->PC += 2;
 }
@@ -118,8 +118,8 @@ static void ld(chip8 *chip, uint16_t opcode)
 // 8xy1 (Vx = Vx OR Vy)
 static void or (chip8 * chip, uint16_t opcode)
 {
-    uint16_t x = opcode & 0x0F00 >> 8;
-    uint16_t y = opcode & 0x00F0 >> 4;
+    uint16_t x = (opcode & 0x0F00) >> 8;
+    uint16_t y = (opcode & 0x00F0) >> 4;
     chip->V[x] = chip->V[y] | chip->V[x];
     chip->PC += 2;
 }
@@ -127,8 +127,8 @@ static void or (chip8 * chip, uint16_t opcode)
 // 8xy2 (Vx = Vx AND Vy)
 static void and (chip8 * chip, uint16_t opcode)
 {
-    uint16_t x = opcode & 0x0F00 >> 8;
-    uint16_t y = opcode & 0x00F0 >> 4;
+    uint16_t x = (opcode & 0x0F00) >> 8;
+    uint16_t y = (opcode & 0x00F0) >> 4;
     chip->V[x] = chip->V[y] & chip->V[x];
     chip->PC += 2;
 }
@@ -136,8 +136,8 @@ static void and (chip8 * chip, uint16_t opcode)
 // 8xy3 (Vx = Vx XOR Vy)
 static void xor(chip8 *chip, uint16_t opcode)
 {
-    uint16_t x = opcode & 0x0F00 >> 8;
-    uint16_t y = opcode & 0x00F0 >> 4;
+    uint16_t x = (opcode & 0x0F00) >> 8;
+    uint16_t y = (opcode & 0x00F0) >> 4;
     chip->V[x] = chip->V[y] ^ chip->V[x];
     chip->PC += 2;
 }
@@ -145,8 +145,8 @@ static void xor(chip8 *chip, uint16_t opcode)
 //8xy4 (Set Vx = Vx + Vy, set VF = carry)
 static void add(chip8 *chip, uint16_t opcode)
 {
-    uint16_t x = opcode & 0x0F00 >> 8;
-    uint16_t y = opcode & 0x00F0 >> 4;
+    uint16_t x = (opcode & 0x0F00) >> 8;
+    uint16_t y = (opcode & 0x00F0) >> 4;
     chip->V[x] = chip->V[y] + chip->V[x];
 
     if (chip->V[y] > (0xFF - chip->V[x]))
@@ -159,8 +159,8 @@ static void add(chip8 *chip, uint16_t opcode)
 // 8xy5 (Set Vx = Vx - Vy, set VF = NOT borrow)
 static void sub(chip8 *chip, uint16_t opcode)
 {
-    uint16_t x = opcode & 0x0F00 >> 8;
-    uint16_t y = opcode & 0x00F0 >> 4;
+    uint16_t x = (opcode & 0x0F00) >> 8;
+    uint16_t y = (opcode & 0x00F0) >> 4;
     chip->V[x] = chip->V[y] - chip->V[x];
     if (chip->V[y] > (0xFF - chip->V[x]))
         chip->V[0xF] = 0;
@@ -172,7 +172,7 @@ static void sub(chip8 *chip, uint16_t opcode)
 // 8xy6 (Set Vx = Vx shifted right of 1 byte)
 static void shr(chip8 *chip, uint16_t opcode)
 {
-    uint16_t x = opcode & 0x0F00 >> 8;
+    uint16_t x = (opcode & 0x0F00) >> 8;
     chip->V[0xF] = chip->V[x] & 0x1;
     chip->V[x] >>= 1;
     chip->PC += 2;
@@ -181,8 +181,8 @@ static void shr(chip8 *chip, uint16_t opcode)
 // 8xy7 (Set Vx = Vy - Vx, set VF = NOT borrow)
 static void subn(chip8 *chip, uint16_t opcode)
 {
-    uint16_t x = opcode & 0x0F00 >> 8;
-    uint16_t y = opcode & 0x00F0 >> 4;
+    uint16_t x = (opcode & 0x0F00) >> 8;
+    uint16_t y = (opcode & 0x00F0) >> 4;
     if (chip->V[x] < chip->V[y])
         chip->V[0xF] = 0;
     else
@@ -194,7 +194,7 @@ static void subn(chip8 *chip, uint16_t opcode)
 // 8xy6 (Set Vx = Vx shifted left of 1 byte)
 static void shl(chip8 *chip, uint16_t opcode)
 {
-    uint16_t x = opcode & 0x0F00 >> 8;
+    uint16_t x = (opcode & 0x0F00) >> 8;
     chip->V[0xF] = chip->V[x] >> 7;
     chip->V[x] <<= 1;
     chip->PC += 2;
@@ -222,8 +222,8 @@ void eight_case(chip8 *chip, uint16_t opcode)
 // 9xy0 (Skip next instruction if Vx != Vy)
 void nine_case(chip8 *chip, uint16_t opcode)
 {
-    uint16_t val1 = chip->V[opcode & 0x0F00 >> 8];
-    uint16_t val2 = chip->V[opcode & 0x00F0 >> 4];
+    uint16_t val1 = chip->V[(opcode & 0x0F00) >> 8];
+    uint16_t val2 = chip->V[(opcode & 0x00F0) >> 4];
     if (val1 != val2)
         chip->PC += 4;
     else
@@ -247,15 +247,15 @@ void b_case(chip8 *chip, uint16_t opcode)
 void c_case(chip8 *chip, uint16_t opcode)
 {
     uint16_t val = (rand() % (0xFF + 1)) & (opcode & 0x00FF);
-    chip->V[opcode & 0x0F00 >> 8] = val;
+    chip->V[(opcode & 0x0F00) >> 8] = val;
     chip->PC += 2;
 }
 
 // Dxyn (Displays n-byte sprite starting at I at Vx, Vy)
 void d_case(chip8 *chip, uint16_t opcode)
 {
-    uint16_t x = opcode & 0x0F00 >> 8;
-    uint16_t y = opcode & 0x00F0 >> 4;
+    uint16_t x = (opcode & 0x0F00) >> 8;
+    uint16_t y = (opcode & 0x00F0) >> 4;
     chip->V[0xF] = 0;
 
     for (size_t y_coord = 0xF; y_coord < (opcode & 0x000F); y_coord++)
@@ -283,7 +283,7 @@ void d_case(chip8 *chip, uint16_t opcode)
 // Ex9E (Skip next instruction if key with the value of Vx is pressed)
 static void skp(chip8 *chip, uint16_t opcode)
 {
-    if (chip->key_flags[chip->V[opcode & 0x0F00 >> 8]] != 0)
+    if (chip->key_flags[chip->V[(opcode & 0x0F00) >> 8]] != 0)
     {
         chip->PC += 2;
     }
@@ -292,7 +292,7 @@ static void skp(chip8 *chip, uint16_t opcode)
 // Ex9E (Skip next instruction if key with the value of Vx is NOT pressed)
 static void skpn(chip8 *chip, uint16_t opcode)
 {
-    if (chip->key_flags[chip->V[opcode & 0x0F00 >> 8]] == 0)
+    if (chip->key_flags[chip->V[(opcode & 0x0F00) >> 8]] == 0)
     {
         chip->PC += 2;
     }
@@ -316,7 +316,7 @@ void e_case(chip8 *chip, uint16_t opcode)
 // Fx07 (Set Vx = delay timer value)
 static void ld_dt(chip8 *chip, uint16_t opcode)
 {
-    chip->V[opcode & 0x0F00 >> 8] = chip->delay_timer;
+    chip->V[(opcode & 0x0F00) >> 8] = chip->delay_timer;
     chip->PC += 2;
 }
 
@@ -335,7 +335,7 @@ static void ld_k(chip8 *chip, uint16_t opcode)
             if ((chip->saved_keys[i] == 0) && (chip->key_flags[i] == 1))
             {
                 chip->key_wait = 0;
-                chip->V[opcode & 0x0F00 >> 8] = i;
+                chip->V[(opcode & 0x0F00) >> 8] = i;
                 chip->PC += 2;
             }
             else
@@ -347,21 +347,21 @@ static void ld_k(chip8 *chip, uint16_t opcode)
 // Fx15 (Set delay timer = Vx)
 static void ld_dt2(chip8 *chip, uint16_t opcode)
 {
-    chip->delay_timer = chip->V[opcode & 0x0F00 >> 8];
+    chip->delay_timer = chip->V[(opcode & 0x0F00) >> 8];
     chip->PC += 2;
 }
 
 // Fx18 (Set sound timer = Vx)
 static void ld_st(chip8 *chip, uint16_t opcode)
 {
-    chip->sound_timer = chip->V[opcode & 0x0F00 >> 8];
+    chip->sound_timer = chip->V[(opcode & 0x0F00) >> 8];
     chip->PC += 2;
 }
 
 // Fx1E (Set I = I + Vx)
 static void add_i(chip8 *chip, uint16_t opcode)
 {
-    chip->I += chip->V[opcode & 0x0F00 >> 8];
+    chip->I += chip->V[(opcode & 0x0F00) >> 8];
     chip->PC += 2;
 }
 
