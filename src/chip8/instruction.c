@@ -91,6 +91,7 @@ void six_case(chip8 *chip, uint16_t opcode)
 
     uint16_t val = opcode & 0x00FF;
     chip->V[index] = val;
+    chip->PC += 2;
 }
 
 // 7xkk (Set Vx = Vx + kk)
@@ -101,6 +102,7 @@ void seven_case(chip8 *chip, uint16_t opcode)
 
     uint16_t val = opcode & 0x00FF;
     chip->V[index] += val;
+    chip->PC += 2;
 }
 
 // plural cases for 8
