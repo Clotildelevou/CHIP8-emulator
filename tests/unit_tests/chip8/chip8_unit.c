@@ -89,3 +89,28 @@ Test(instructions_set, four_case_false)
     cr_expect_eq(chip->PC, pc);
     free_chip8(chip);
 }
+
+Test(instructions_set, five_case_true)
+{
+    chip8 *chip = init_chip8();
+    uint16_t val = 0x0042;
+    uint16_t opcode = 0x5520;
+    uint16_t pc = chip->PC + 4;
+    chip->V[5] = val;
+    chip->V[2] = val;
+    five_case(chip, opcode);
+    cr_expect_eq(chip->PC, pc);
+    free_chip8(chip);
+}
+
+Test(instructions_set, five_case_false)
+{
+    chip8 *chip = init_chip8();
+    uint16_t val = 0x0042;
+    uint16_t opcode = 0x5520;
+    uint16_t pc = chip->PC + 2;
+    chip->V[5] = val;
+    five_case(chip, opcode);
+    cr_expect_eq(chip->PC, pc);
+    free_chip8(chip);
+}
