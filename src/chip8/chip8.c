@@ -2,6 +2,7 @@
 
 chip8 *init_chip8(void)
 {
+    //Chip memory allocation
     chip8 *chip = malloc(sizeof(chip8)); // init chip8 object
     if (chip == NULL)
     {
@@ -9,6 +10,7 @@ chip8 *init_chip8(void)
         exit(1);
     }
 
+    //Stack allocation
     chip->stack = calloc(16 * sizeof(uint16_t), 1); // init stack
     if (chip->stack == NULL)
     {
@@ -16,6 +18,7 @@ chip8 *init_chip8(void)
         exit(1);
     }
 
+    //Memory allocation
     chip->memory = calloc(4096 * sizeof(uint8_t), 1); // init memory
     if (chip->memory == NULL)
     {
@@ -24,6 +27,7 @@ chip8 *init_chip8(void)
         return NULL;
     }
 
+    //Screen allocation
     chip->screen = calloc(2048 * sizeof(uint8_t), 1); // init screen
     if (chip->screen == NULL)
     {
@@ -31,18 +35,28 @@ chip8 *init_chip8(void)
         exit(1);
     }
 
+    //Key_flags allocation
     chip->key_flags = calloc(16 * sizeof(uint8_t), 1);
     if (chip->key_flags == NULL)
     {
         fprintf(stderr, "Couldn't init key_flags\n");
         exit(1);
     }
+
+    //Memory key allocation
     chip->saved_keys = calloc(16 * sizeof(uint8_t), 1);
     if (chip->saved_keys == NULL)
     {
         fprintf(stderr, "Couldn't init saved keys\n");
         exit(1);
     }
+
+    //Set registers
+    for (size_t i = 0; i < 16; i++)
+    {
+        chip->V[i] = 0;
+    }
+
     chip->SP = 0; // set stack pointer
     chip->PC = 0x200; // set program counter
     chip->delay_timer = 0; // set delay timer
