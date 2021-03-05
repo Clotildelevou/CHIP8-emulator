@@ -76,7 +76,7 @@ void five_case(chip8 *chip, uint16_t opcode)
     uint16_t x_index = (opcode & 0x0F00) >> 8;
 
     // shift to turn 0x00Y0 → 0x000Y
-    uint16_t y_index = (opcode & 0x00F0) >> 4;
+    uint16_t y_index = (opcode & 0x00F0) >> 8;
     if (chip->V[x_index] == chip->V[y_index])
         chip->PC += 4;
     else
@@ -91,6 +91,7 @@ void six_case(chip8 *chip, uint16_t opcode)
 
     uint16_t val = opcode & 0x00FF;
     chip->V[index] = val;
+    chip->PC += 2;
 }
 
 // 7xkk (Set Vx = Vx + kk)
@@ -101,6 +102,7 @@ void seven_case(chip8 *chip, uint16_t opcode)
 
     uint16_t val = opcode & 0x00FF;
     chip->V[index] += val;
+    chip->PC += 2;
 }
 
 // plural cases for 8
