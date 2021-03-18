@@ -363,3 +363,13 @@ Test(instructions_set, a_case)
     free_chip8(chip);
 }
 
+Test(instructions_set, b_case)
+{
+    chip8 *chip = init_chip8();
+    uint16_t opcode = 0xB120;
+    chip->V[0x0] = 0x0003;
+    uint16_t pc = 0x0123;
+    b_case(chip, opcode);
+    cr_expect_eq(chip->PC, pc);
+    free_chip8(chip);
+}
