@@ -351,3 +351,15 @@ Test(instructions_set, nine_case_skip)
     cr_expect_eq(chip->PC, pc);
     free_chip8(chip);
 }
+
+Test(instructions_set, a_case)
+{
+    chip8 *chip = init_chip8();
+    uint16_t opcode = 0xA123;
+    uint16_t pc = chip->PC + 2;
+    a_case(chip, opcode);
+    cr_expect_eq(chip->I, 0x0123);
+    cr_expect_eq(chip->PC, pc);
+    free_chip8(chip);
+}
+
