@@ -212,11 +212,11 @@ void eight_case(chip8 *chip, uint16_t opcode)
     if (index == 0xE)
         cases[8](chip, opcode);
     // the 8th instruction is 8xyE
-    if (index <= 7)
+    if (index <= 8)
         cases[index](chip, opcode);
     else
     {
-        fprintf(stderr, "Unknown opcode !");
+        fprintf(stderr, "Unknown opcode %#x !\n", opcode);
         exit(1);
     }
 }
