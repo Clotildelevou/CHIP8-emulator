@@ -245,3 +245,29 @@ Test(instructions_set, eight_sub_case_borrow)
     cr_expect_eq(chip->V[0xF], 0x00001);
     free_chip8(chip);
 }
+
+Test(instructions_set, eight_shr_case)
+{
+    chip8 *chip = init_chip8();
+    uint16_t opcode = 0x8546;
+    chip->V[5] = 0x0001;
+    uint16_t pc = chip->PC + 2;
+    eight_case(chip, opcode);
+    cr_expect_eq(chip->PC, pc);
+    cr_expect_eq(chip->V[5], 0x0000);
+    cr_expect_eq(chip->V[0xF], 0x00001);
+    free_chip8(chip);
+}
+
+Test(instructions_set, eight_shr_case_no_last)
+{
+    chip8 *chip = init_chip8();
+    uint16_t opcode = 0x8546;
+    chip->V[5] = 0x0002;
+    uint16_t pc = chip->PC + 2;
+    eight_case(chip, opcode);
+    cr_expect_eq(chip->PC, pc);
+    cr_expect_eq(chip->V[5], 0x0001);
+    cr_expect_eq(chip->V[0xF], 0x00000);
+    free_chip8(chip);
+}
