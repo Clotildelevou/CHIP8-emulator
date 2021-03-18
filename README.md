@@ -8,11 +8,11 @@ A simple chip8-emulator in C language.
 The whole instruction set is done. A nice refacto is needeed.
 
 **Tests**
-▰▱▱▱▱▱▱▱▱▱ 10%
+▰▰▰▰▱▱▱▱▱▱ 40%
 Currently writing tests.
 
 **Display**
-▰▱▱▱▱▱▱ 15%
+▰▰▰▰▰▱▱▱▱▱ 50%
 Opcodes for the display are OK. Must do the chip8 fontset.
 
 **Input**
