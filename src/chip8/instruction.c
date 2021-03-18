@@ -118,7 +118,7 @@ static void ld(chip8 *chip, uint16_t opcode)
 }
 
 // 8xy1 (Vx = Vx OR Vy)
-static void or (chip8 * chip, uint16_t opcode)
+static void or(chip8 * chip, uint16_t opcode)
 {
     uint16_t x = (opcode & 0x0F00) >> 8;
     uint16_t y = (opcode & 0x00F0) >> 4;
@@ -127,7 +127,7 @@ static void or (chip8 * chip, uint16_t opcode)
 }
 
 // 8xy2 (Vx = Vx AND Vy)
-static void and (chip8 * chip, uint16_t opcode)
+static void and(chip8 * chip, uint16_t opcode)
 {
     uint16_t x = (opcode & 0x0F00) >> 8;
     uint16_t y = (opcode & 0x00F0) >> 4;
