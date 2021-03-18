@@ -189,11 +189,11 @@ static void subn(chip8 *chip, uint16_t opcode)
         chip->V[0xF] = 0;
     else
         chip->V[0xF] = 1;
-    chip->V[x] = chip->V[y] + chip->V[x];
+    chip->V[x] = chip->V[y] - chip->V[x];
     chip->PC += 2;
 }
 
-// 8xy6 (Set Vx = Vx shifted left of 1 byte)
+// 8xy8 (Set Vx = Vx shifted left of 1 byte)
 static void shl(chip8 *chip, uint16_t opcode)
 {
     uint16_t x = (opcode & 0x0F00) >> 8;
