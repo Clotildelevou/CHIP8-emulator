@@ -301,3 +301,29 @@ Test(instructions_set, eight_subn_case)
     free_chip8(chip);
 
 }
+
+Test(instructions_set, eight_shl_case)
+{
+    chip8 *chip = init_chip8();
+    uint16_t opcode = 0x8548;
+    chip->V[5] = 0x00F0;
+    uint16_t pc = chip->PC + 2;
+    eight_case(chip, opcode);
+    cr_expect_eq(chip->PC, pc);
+    cr_expect_eq(chip->V[5], 0x00E0);
+    cr_expect_eq(chip->V[0xF], 0x00001);
+    free_chip8(chip);
+}
+
+Test(instructions_set, eight_shl_case_no_first)
+{
+    chip8 *chip = init_chip8();
+    uint16_t opcode = 0x8548;
+    chip->V[5] = 0x0001;
+    uint16_t pc = chip->PC + 2;
+    eight_case(chip, opcode);
+    cr_expect_eq(chip->PC, pc);
+    cr_expect_eq(chip->V[5], 0x0002);
+    cr_expect_eq(chip->V[0xF], 0x00000);
+    free_chip8(chip);
+}
