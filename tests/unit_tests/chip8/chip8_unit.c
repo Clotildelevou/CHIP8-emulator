@@ -383,7 +383,6 @@ Test(instructions_set, skp_true)
     uint16_t pc = chip->PC + 4;
     e_case(chip, opcode);
     cr_expect_eq(chip->PC, pc);
-    printf("pc %d and chip->PC %d\n", pc, chip->PC);
     free_chip8(chip);
 }
 
@@ -393,6 +392,29 @@ Test(instructions_set, skp_false)
     chip8 *chip = init_chip8();
     uint16_t opcode = 0xE19E;
     chip->V[0x1] = 0x0002;
+    uint16_t pc = chip->PC + 2;
+    e_case(chip, opcode);
+    cr_expect_eq(chip->PC, pc);
+    free_chip8(chip);
+}
+
+Test(instructions_set, skpn_true)
+{
+    chip8 *chip = init_chip8();
+    uint16_t opcode = 0xE1A1;
+    chip->V[0x1] = 0x0002;
+    uint16_t pc = chip->PC + 4;
+    e_case(chip, opcode);
+    cr_expect_eq(chip->PC, pc);
+    free_chip8(chip);
+}
+
+Test(instructions_set, skpn_false)
+{
+    chip8 *chip = init_chip8();
+    uint16_t opcode = 0xE2A1;
+    chip->V[2] = 0x0003;
+    chip->key_flags[0x0003] = 0x0005;
     uint16_t pc = chip->PC + 2;
     e_case(chip, opcode);
     cr_expect_eq(chip->PC, pc);
