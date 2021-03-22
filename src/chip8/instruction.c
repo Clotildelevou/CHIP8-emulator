@@ -285,15 +285,17 @@ void d_case(chip8 *chip, uint16_t opcode)
 // Ex9E (Skip next instruction if key with the value of Vx is pressed)
 static void skp(chip8 *chip, uint16_t opcode)
 {
-    if (chip->key_flags[chip->V[(opcode & 0x0F00) >> 8]] != 0)
+    int index = (opcode & 0x0F00) >> 8;
+    if (chip->key_flags[chip->V[index]] != 0x0)
     {
         chip->PC += 2;
     }
 }
 
-// Ex9E (Skip next instruction if key with the value of Vx is NOT pressed)
+// ExA1 (Skip next instruction if key with the value of Vx is NOT pressed)
 static void skpn(chip8 *chip, uint16_t opcode)
 {
+    int index = (opcode & 0x0F00) >> 8;
     if (chip->key_flags[chip->V[(opcode & 0x0F00) >> 8]] == 0)
     {
         chip->PC += 2;
@@ -303,13 +305,13 @@ static void skpn(chip8 *chip, uint16_t opcode)
 // Handle Exnn cases
 void e_case(chip8 *chip, uint16_t opcode)
 {
-    if ((opcode & 0x00F0) == 0x0090)
+    if ((opcode & 0x00FF) == 0x009E)
         skp(chip, opcode);
-    if ((opcode & 0x00F0) == 0x00A0)
+    else if ((opcode & 0x00FF) == 0x00A1)
         skpn(chip, opcode);
     else
     {
-        fprintf(stderr, "Unknown opcode !");
+        fprintf(stderr, "Unknown opcode ! %#x\n", opcode);
         exit(1);
     }
     chip->PC += 2;
