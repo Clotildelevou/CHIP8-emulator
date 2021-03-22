@@ -296,7 +296,7 @@ static void skp(chip8 *chip, uint16_t opcode)
 static void skpn(chip8 *chip, uint16_t opcode)
 {
     int index = (opcode & 0x0F00) >> 8;
-    if (chip->key_flags[chip->V[(opcode & 0x0F00) >> 8]] == 0)
+    if (chip->key_flags[chip->V[index]] == 0x0)
     {
         chip->PC += 2;
     }
