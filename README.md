@@ -4,12 +4,13 @@ A simple chip8-emulator in C language.
 ## Status
 
 **Instructions:**
-▰▰▰▰▰▰▰▰▰▱ 90%
-The whole instruction set is done. A nice refacto is needeed.
+▰▰▰▰▰▰▰▰▰▰ 100%
+The whole instruction set is OK.
 
 **Tests**
-▰▰▰▰▱▱▱▱▱▱ 40%
-Currently writing tests.
+▰▰▰▰▰▰▰▰▱▱ 80%
+Opcodes unit tests are OK.
+Must do functionnal tests.
 
 **Display**
 ▰▰▰▰▰▱▱▱▱▱ 50%
