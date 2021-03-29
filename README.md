@@ -3,7 +3,8 @@ A simple chip8-emulator in C language.
 
 ## Status
 
-**Instructions:**
+**Instructions**
+
 ▰▰▰▰▰▰▰▰▰▰ 100%
 The whole instruction set is OK.
 
