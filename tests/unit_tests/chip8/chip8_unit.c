@@ -555,3 +555,21 @@ Test(instructions_set, ld_i)
     cr_expect_eq(chip->PC, pc);
     free_chip8(chip);
 }
+
+Test(instructions_set, ld_i2)
+{
+    chip8 *chip = init_chip8();
+    uint16_t opcode = 0xFF65;
+    for (size_t i = 0 ; i < 0xF; i++)
+    {
+        chip->memory[chip->I + i] = i;
+    }
+    uint16_t pc = chip->PC + 2;
+    f_case(chip, opcode);
+    for (size_t i = 0; i < 0xF; i++)
+    {
+        cr_expect_eq(chip->V[i] , i);
+    }
+    cr_expect_eq(chip->PC, pc);
+    free_chip8(chip);
+}
