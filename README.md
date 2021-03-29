@@ -3,21 +3,24 @@ A simple chip8-emulator in C language.
 
 ## Status
 
-**Instructions**
+**Instructions:**
 
 ▰▰▰▰▰▰▰▰▰▰ 100%
 The whole instruction set is OK.
 
-**Tests**
+**Tests:**
+
 ▰▰▰▰▰▰▰▰▱▱ 80%
 Opcodes unit tests are OK.
 Must do functionnal tests.
 
-**Display**
+**Display:**
+
 ▰▰▰▰▰▱▱▱▱▱ 50%
 Opcodes for the display are OK. Must do the chip8 fontset.
 
-**Input**
+**Input:**
+
 ▰▰▰▰▰▰▱▱▱▱ 60%
 Opcodes for the input are OK.
 
