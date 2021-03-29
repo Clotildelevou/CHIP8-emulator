@@ -420,3 +420,15 @@ Test(instructions_set, skpn_false)
     cr_expect_eq(chip->PC, pc);
     free_chip8(chip);
 }
+
+Test(instructions_set, ld_dt)
+{
+    chip8 *chip = init_chip8();
+    uint16_t opcode = 0xF207;
+    chip->delay_timer = 0x1;
+    uint16_t pc = chip->PC + 2;
+    f_case(chip, opcode);
+    cr_expect_eq(chip->V[2], 0x1);
+    cr_expect_eq(chip->PC, pc);
+    free_chip8(chip);
+}
