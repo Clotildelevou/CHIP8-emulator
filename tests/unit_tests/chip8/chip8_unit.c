@@ -460,3 +460,17 @@ Test(instructions_set, ld_k_not_pressed)
     cr_expect_eq(chip->key_wait, 1);
     free_chip8(chip);
 }
+
+Test(instructions_set, ld_k_no_key)
+{
+    chip8 *chip = init_chip8();
+    uint16_t opcode = 0xF20A;
+    chip->key_wait = 0;
+    f_case(chip, opcode);
+    for (size_t i = 0; i < 16; i++)
+    {
+        cr_expect_eq(chip->saved_keys[i], chip->key_flags[i]);
+    }
+    cr_expect_eq(chip->key_wait, 1);
+    free_chip8(chip);
+}
