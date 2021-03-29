@@ -373,7 +373,8 @@ static void add_i(chip8 *chip, uint16_t opcode)
 static void ld_f(chip8 *chip, uint16_t opcode)
 {
     uint16_t x_index = (opcode & 0x0F00) >> 8;
-    chip->I = (chip->V[x_index] * 0x5);
+    //sprite is 5bytes hight
+    chip->I = (chip->V[x_index] * 5);
     chip->PC += 2;
 }
 
