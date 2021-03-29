@@ -474,3 +474,15 @@ Test(instructions_set, ld_k_no_key)
     cr_expect_eq(chip->key_wait, 1);
     free_chip8(chip);
 }
+
+Test(instructions_set, ld_dt2)
+{
+    chip8 *chip = init_chip8();
+    uint16_t opcode = 0xF215;
+    chip->V[2] = 0x1;
+    uint16_t pc = chip->PC + 2;
+    f_case(chip, opcode);
+    cr_expect_eq(chip->delay_timer, 0x1);
+    cr_expect_eq(chip->PC, pc);
+    free_chip8(chip);
+}
