@@ -432,3 +432,18 @@ Test(instructions_set, ld_dt)
     cr_expect_eq(chip->PC, pc);
     free_chip8(chip);
 }
+
+Test(instructions_set, ld_k_pressed)
+{
+    chip8 *chip = init_chip8();
+    uint16_t opcode = 0xF20A;
+    chip->key_wait = 1;
+    chip->key_flags[4] = 1;
+    uint16_t pc = chip->PC + 2;
+    f_case(chip, opcode);
+    cr_expect_eq(chip->V[2], 4);
+    cr_expect_eq(chip->PC, pc);
+    cr_expect_eq(chip->key_wait, 0);
+    free_chip8(chip);
+}
+
