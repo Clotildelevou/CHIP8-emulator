@@ -329,7 +329,7 @@ static void ld_k(chip8 *chip, uint16_t opcode)
 {
     if (chip->key_wait == 0)
     {
-        memcpy(&chip->saved_keys, &chip->key_flags, 8);
+        memcpy(chip->saved_keys, chip->key_flags, 8);
         chip->key_wait = 1;
     }
     else
