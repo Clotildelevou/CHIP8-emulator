@@ -16,14 +16,19 @@ Must do functionnal tests.
 
 **Display:**
 
-▰▰▰▰▰▱▱▱▱▱ 50%
-Opcodes for the display are OK. Must do the chip8 display.
+▰▰▰▰▰▰▰▰▰▰ 100%
+Opcodes for the display are OK.
 The display is powered by the SDL lib.
 
 **Input:**
 
 ▰▰▰▰▰▰▱▱▱▱ 60%
 Opcodes for the input are OK.
+
+
+**File load:**
+
+Somthing to load games files will be implemented soon !
 
 ## Sources
 [Cowgod's Chip-8 Technical Refecrence](http://devernay.free.fr/hacks/chip8/C8TECH10.HTM#Fx07)
