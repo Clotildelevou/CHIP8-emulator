@@ -11,9 +11,10 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 #Test option
 option(ENABLE_TESTS "Build tests along with the library" ON)
 
+
 set(SOURCE_ROOT "${PROJECT_SOURCE_DIR}/src")
 set(EXC_TST "${PROJECT_SOURCE_DIR}/build")
-set(CFLAGS -g -Wall -Wextra -Werror -pedantic -std=c99 -I${SOURCE_ROOT})
+set(CFLAGS -Wextra -Werror -pedantic -std=c99 -I${SOURCE_ROOT})
 set(LDFLAGS_TEST -fsanitize=address -lcriterion)
 
 # ==========================================
@@ -24,18 +25,22 @@ set(LDFLAGS_TEST -fsanitize=address -lcriterion)
 # If you want to add a lib, add its name to this variable
 set(LIBS
     chip8
+    display
     )
+
+find_package(SDL2 REQUIRED)
+include_directories(${SDL2_INCLUDE_DIRS})
 
 # chip8
 file(GLOB_RECURSE CHIP8_SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "src/chip8/*.c")
 add_library(chip8 STATIC ${CHIP8_SOURCES})
 target_compile_options(chip8 PRIVATE ${CFLAGS})
 
-# lib2
-#file(GLOB_RECURSE LIB2_SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "src/lib2/*.c")
-#add_library(lib2 STATIC ${LIB2_SOURCES})
-#target_compile_options(lib2 PRIVATE ${CFLAGS})
-#target_link_libraries(lib2 PRIVATE lib1)
+# display
+file(GLOB_RECURSE DISPLAY_SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "src/display/*.c")
+add_library(display STATIC ${DISPLAY_SOURCES})
+target_compile_options(display PRIVATE ${CFLAGS})
+target_link_libraries(display PRIVATE chip8)
 
 # ==========================================
 #             Test executables
@@ -70,5 +75,5 @@ endif()
 # ==========================================
 
 add_executable(chip8_emulator src/main.c)
-target_link_libraries(chip8_emulator PRIVATE ${LIBS})
+target_link_libraries(chip8_emulator PRIVATE ${LIBS} ${SDL2_LIBRARIES})
 target_compile_options(chip8_emulator PRIVATE ${CFLAGS})
