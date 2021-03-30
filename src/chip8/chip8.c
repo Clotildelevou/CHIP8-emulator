@@ -7,7 +7,7 @@ chip8 *init_chip8(void)
     if (chip == NULL)
     {
         fprintf(stderr, "Couldn't init chip\n");
-        exit(1);
+        return NULL;
     }
 
     //Stack allocation
@@ -15,7 +15,7 @@ chip8 *init_chip8(void)
     if (chip->stack == NULL)
     {
         fprintf(stderr, "Couldn't init stack\n");
-        exit(1);
+        return NULL;
     }
 
     //Memory allocation
@@ -23,7 +23,6 @@ chip8 *init_chip8(void)
     if (chip->memory == NULL)
     {
         fprintf(stderr, "Couldn't init memory\n");
-        exit(1);
         return NULL;
     }
 
@@ -32,7 +31,7 @@ chip8 *init_chip8(void)
     if (chip->screen == NULL)
     {
         fprintf(stderr, "Couldn't init display\n");
-        exit(1);
+        return NULL;
     }
 
     //Key_flags allocation
@@ -40,7 +39,7 @@ chip8 *init_chip8(void)
     if (chip->key_flags == NULL)
     {
         fprintf(stderr, "Couldn't init key_flags\n");
-        exit(1);
+        return NULL;
     }
 
     //Memory key allocation
@@ -48,7 +47,7 @@ chip8 *init_chip8(void)
     if (chip->saved_keys == NULL)
     {
         fprintf(stderr, "Couldn't init saved keys\n");
-        exit(1);
+        return NULL;
     }
 
     //Set registers
