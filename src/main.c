@@ -28,7 +28,7 @@ int main(void)
     while (!exit)
     {
         res = display_chip(chip, window, renderer);
-        //emulate(chip);
+        emulate(chip);
         SDL_WaitEvent(&event);
         if(event.type == SDL_QUIT)
             exit = SDL_TRUE;
