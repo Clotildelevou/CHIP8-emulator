@@ -22,7 +22,7 @@ The display is powered by the SDL lib.
 
 **Input:**
 
-▰▰▰▰▰▰▱▱▱▱ 60%
+▰▰▰▰▰▰▰▰▰▰ 100%
 Opcodes for the input are OK.
 Original keymap is mapped like this :
 
