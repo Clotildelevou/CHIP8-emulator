@@ -24,7 +24,17 @@ The display is powered by the SDL lib.
 
 ▰▰▰▰▰▰▱▱▱▱ 60%
 Opcodes for the input are OK.
+Original keymap is mapped like this :
 
+1 2 3 C    
+4 5 6 D   
+7 8 9 E   
+A 0 B F    
+     
+E R T Y
+D F G H
+C V B N
+U I O P
 
 **File load:**
 
