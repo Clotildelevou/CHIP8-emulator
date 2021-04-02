@@ -74,10 +74,48 @@ void free_chip8(chip8 *chip)
     free(chip);
 }
 
+int load_file(chip8 *chip, char *filename, long pos)
+{
+     FILE *file = NULL;
+     file = fopen(filename, "r");
+     if (file == NULL)
+    {
+        fprintf(stderr, "Error loading file %s\n", filename);
+        return -1;
+    }
+
+    fseek(file, 0L, SEEK_END);
+    long sz = ftell(file);
+    rewind(file);
+
+    if (pos >= sz)
+    {
+        fprintf(stderr, "Pos too big %ld \n", pos);
+        return -1;
+    }
+
+    if(fseek(file, pos, SEEK_SET) != 0)
+    {
+        fprintf(stderr, "Couldn't get right pos %ld \n", pos);
+        return -1;
+    }
+
+    int c;
+    int index = 0;
+    do
+    {
+        c = fgetc(file);
+        chip->memory[index] = c;
+    } while(c != EOF && index < 4096);
+
+    fclose(file);
+    return pos + index + 1;
+}
+
 int emulate(chip8 *chip)
 {
     //TODO load another chunk if pc = 4096
-    
+
     uint16_t opcode = chip->memory[chip->PC] << 8
         | chip->memory[chip->PC + 1]; // fetches the opcode
 
