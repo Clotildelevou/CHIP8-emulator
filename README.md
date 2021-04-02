@@ -31,10 +31,10 @@ Original keymap is mapped like this :
 7 8 9 E   
 A 0 B F    
      
-E R T Y
-D F G H
-C V B N
-U I O P
+E R T Y   
+D F G H   
+C V B N   
+U I O P   
 
 **File load:**
 
