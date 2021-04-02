@@ -26,6 +26,7 @@ set(LDFLAGS_TEST -fsanitize=address -lcriterion)
 set(LIBS
     chip8
     display
+    input
     )
 
 find_package(SDL2 REQUIRED)
@@ -41,6 +42,11 @@ file(GLOB_RECURSE DISPLAY_SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "src/display/*.c"
 add_library(display STATIC ${DISPLAY_SOURCES})
 target_compile_options(display PRIVATE ${CFLAGS})
 target_link_libraries(display PRIVATE chip8)
+
+file(GLOB_RECURSE INPUT_SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "src/input/*.c")
+add_library(input STATIC ${INPUT_SOURCES})
+target_compile_options(input PRIVATE ${CFLAGS})
+target_link_libraries(input PRIVATE chip8)
 
 # ==========================================
 #             Test executables

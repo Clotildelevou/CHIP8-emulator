@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "display/display.h"
+#include "input/input.h"
 
 
 int main(void)
@@ -27,11 +28,10 @@ int main(void)
     int exit = 0;
     while (!exit)
     {
+
         res = display_chip(chip, window, renderer);
         emulate(chip);
-        SDL_WaitEvent(&event);
-        if(event.type == SDL_QUIT)
-            exit = SDL_TRUE;
+        listen_keyboard(chip, &exit, &event);
     }
 
     quit(window, renderer);
