@@ -100,16 +100,24 @@ int load_file(chip8 *chip, char *filename, long pos)
         return -1;
     }
 
-    int c;
-    int index = 0;
+    int nibble;
+    int index = chip->PC;
     do
     {
-        c = fgetc(file);
-        chip->memory[index] = c;
-    } while(c != EOF && index < 4096);
-
+        nibble = fgetc(file);
+        chip->memory[index] = nibble;
+        index++;
+    } while(nibble != EOF && index < 4096);
     fclose(file);
     return pos + index + 1;
+}
+
+void DisplayBinary(unsigned int n)
+{
+    unsigned i;
+    for (i = 1 << 31; i > 0; i = i / 2)
+        (n & i) ? printf("1") : printf("0");
+    printf("\n");
 }
 
 int emulate(chip8 *chip)
@@ -119,6 +127,7 @@ int emulate(chip8 *chip)
     uint16_t opcode = chip->memory[chip->PC] << 8
         | chip->memory[chip->PC + 1]; // fetches the opcode
 
+    //printf("opcode : %04x PC :%d\n", opcode, chip->PC);
     if (opcode != 0)
     {
         void (*cases[])(chip8 *,
@@ -130,7 +139,13 @@ int emulate(chip8 *chip)
         // the opcode can be : 0xYnnn with Y in [0-F]
         // you can read about nnn in src/chip8/instruction.c
 
-        uint16_t index = opcode & 0xF000 >> 12;
+        // 0100 0000 0000 0000
+        // 0000 0000 0000 0100DisplayBinary(opcode);
+        uint16_t index = opcode & 0xF000;
+        for (int i = 0; i < 12; i++)
+        {
+            index >>= 1;
+        }
         // We can directly use the first nibble of the opcode to call functions
         // of the jump table.
         // For example: your opcode is 0x8xy0
@@ -139,6 +154,11 @@ int emulate(chip8 *chip)
         // cases[8] = eight_case
         cases[index](chip, opcode);
         return 0;
+    }
+    else
+    {
+        fprintf(stderr, "0 opcode\n");
+        exit(1);
     }
     return 0;
 }
