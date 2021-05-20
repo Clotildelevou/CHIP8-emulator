@@ -12,6 +12,12 @@ int main(int argc, char *argv[])
         return -1;
     }
 
+    if (argc == 1)
+    {
+        fprintf(stderr, "You must specify file path\n");
+        return -1;
+    }
+
     //Init chip8
     chip8 *chip = init_chip8();
     if (chip == NULL)
@@ -24,6 +30,7 @@ int main(int argc, char *argv[])
     char *filename = argv[1];
     int loaded_data = load_file(chip, filename, 0L);
     int more_data = loaded_data == 4096;
+
 
     //Graphic part
     SDL_Window *window = NULL;
@@ -40,7 +47,7 @@ int main(int argc, char *argv[])
     while (!exit)
     {
 
-        res = display_chip(chip, window, renderer);
+        res = display_chip(chip, renderer);
         emulate(chip);
         listen_keyboard(chip, &exit, &event);
         if (chip->PC == 4096 && more_data)
