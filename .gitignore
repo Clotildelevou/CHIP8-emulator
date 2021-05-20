@@ -2,8 +2,12 @@
 *.so
 *.a
 *.swp
+*.xml
+*.txt
+.idea
 build/*
 build
+cmake-build-debug
 CHIP8-emulator
 testsuite
 venv

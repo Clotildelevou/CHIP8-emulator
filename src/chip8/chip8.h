@@ -26,6 +26,7 @@ typedef struct chip8
 
 chip8 *init_chip8(void); // inits the chip8
 void free_chip8(chip8 *chip); // free the chip
+int load_file(chip8 *chip, char *filename, long pos); //load chunk of file from pos
 int emulate(chip8 *chip); // emulate a cycle (fetch opcode, decode,
                            // execute & update timers)
 void zero_case(chip8 *chip, uint16_t opcode);
