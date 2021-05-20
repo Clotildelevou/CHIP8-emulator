@@ -45,7 +45,7 @@ static int draw_pixel(SDL_Renderer *renderer, int x, int y)
     return 0;
 }
 
-int display_chip(chip8 *chip, SDL_Window *window, SDL_Renderer *renderer)
+int display_chip(chip8 *chip, SDL_Renderer *renderer)
 {
     //Choose color
     if (SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255) != 0)
