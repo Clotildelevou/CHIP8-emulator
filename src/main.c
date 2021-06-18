@@ -9,21 +9,20 @@ int main(int argc, char *argv[])
     if (argc > 2)
     {
         fprintf(stderr, "Too much args\n");
-        return -1;
+        return 1;
     }
 
     if (argc == 1)
     {
         fprintf(stderr, "You must specify file path\n");
-        return -1;
+        return 1;
     }
 
     //Init chip8
     chip8 *chip = init_chip8();
     if (chip == NULL)
     {
-        free_chip8(chip);
-        return -1;
+        return 1;
     }
 
     //Load file
